@@ -1,13 +1,16 @@
 #!/bin/bash
 # Check my external ip
-# v0.1
-
+# v0.2
+# In Arch Linux the curl package is in the base repository, while the wget in the extra.
+#
 # --- External/Internet IP ---------------
-if [ -f `whereis wget | cut -d" " -f2` ] ; then 
-	wget -q -O - checkip.dyndns.org|sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
+if [ -f `whereis curl | cut -d" " -f2` ] ; then 
+	IP=$(curl -s checkip.dyndns.org)
+	IP=${IP#*: }; IP=${IP%%<*}
 else
-	if [ -f `whereis curl | cut -d" " -f2` ] ; then 
-		curl -s checkip.dyndns.org|sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
+	if [ -f `whereis wget | cut -d" " -f2` ] ; then 
+		IP=$(wget -q -O - checkip.dyndns.org)
+		IP=${IP#*: }; IP=${IP%%<*}
 	else
 		echo
 		echo Missing dependencies.
@@ -20,7 +23,7 @@ else
 	fi
 fi
 # --- Local IP ---------------------------
-#IFACE=wlan0
+echo $IP
 IFACE=$(echo $(ip route)|cut -d" " -f5)
 ip a show dev $IFACE | awk '$1 == "inet" { split($2, a, "/"); print a[1]; }'
 echo $IFACE
