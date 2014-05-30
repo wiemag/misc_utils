@@ -2,11 +2,12 @@ Miscellaneous scripts
 ---------------------
 
 Small utility bash scripts.
-- jpg2pdf.sh     - converting JPEG's into monochrome PDF's
-- myip.sh        - external and internal IP plus card interface name
-- sendmyip.sh    - send results of myip.sh to a recepient
-- pdf_cutting.sh - splitting PDF's into smaller PDF's
-- signit.sh      - gpg wrapper to make detached gpg signatures
+- jpg2pdf.sh         - converting JPEG's into monochrome PDF's
+- myip.sh            - external and internal IP plus card interface name
+- sendmyip.sh        - send results of myip.sh to a recepient
+- pdf_cutting.sh     - splitting PDF's into smaller PDF's
+- rename_acc2list.sh - rename files acc. to a list of file names in a text file
+- signit.sh          - gpg wrapper to make detached gpg signatures
 
 INSTALLATION
 
