@@ -6,6 +6,7 @@ Small utility bash scripts.
 - myip.sh            - external and internal IP plus card interface name
 - sendmyip.sh        - send results of myip.sh to a recepient
 - pdf_cutting.sh     - splitting PDF's into smaller PDF's
+- pdf2pdf_mono.sh    - convert a PDF file into a monochrome PDF file
 - rename_acc2list.sh - rename files acc. to a list of file names in a text file
 - signit.sh          - gpg wrapper to make detached gpg signatures
 
