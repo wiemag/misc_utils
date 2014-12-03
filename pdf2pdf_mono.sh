@@ -52,7 +52,10 @@ if [[ -f "$f" ]]; then
 	nf=$f
 	ext=${f##*.}; [[ ${ext,,} = 'pdf' ]] && nf=${nf%.*}
 	nf=${nf}_mono.pdf
-echo Zaczynam pracować!
+	case $LANG in
+		pl*) echo Zaczynam pracować!;;
+		*) echo Working!
+	esac
 	echo convert $VERB $SIZE -density $DENS $THRE "$f" -compress $CMPR -monochrome "$nf"
 	convert $VERB $SIZE -density $DENS $THRE "$f" -compress $CMPR -monochrome "$nf"
 
