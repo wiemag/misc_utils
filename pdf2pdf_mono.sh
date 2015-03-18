@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.2" 		# 2015-06-18
+VERSION="0.4" 		# 2015-02-20
 function usage () {
 local text
 	echo -ne "\nUsage:\n\t\e[1m${0##*/} [-d Density] [-c CompressionType] "
@@ -50,14 +50,18 @@ f=${1}
 [[ -f "$f" ]] || f=${f}.pdf 	# As the pdf extension is optional.
 if [[ -f "$f" ]]; then
 	nf=$f
-	ext=${f##*.}; [[ ${ext,,} = 'pdf' ]] && nf=${nf%.*}
+	ext=${f##*.}; [[ ${ext,,} = 'pdf' ]] && nf=${nf%.*} #${ext,,} lowercase
 	nf=${nf}_mono.pdf
+	bn=${f##*/}
 	case $LANG in
 		pl*) echo Zaczynam pracować!;;
 		*) echo Working!
 	esac
 	echo convert $VERB $SIZE -density $DENS $THRE "$f" -compress $CMPR -monochrome "$nf"
-	convert $VERB $SIZE -density $DENS $THRE "$f" -compress $CMPR -monochrome "$nf"
+	convert $VERB $SIZE -density $DENS $THRE "$f" -compress $CMPR -monochrome /tmp/"$bn"
+
+	[[ $(which qpdf) ]] && { qpdf -empty -pages /tmp/"$bn" 1-z -- "${nf%.pdf}_meta.pdf";
+		rm /tmp/"$bn";} || mv /tmp/"$bn" .
 
 else
 	usage

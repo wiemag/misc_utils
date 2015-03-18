@@ -83,7 +83,7 @@ for OLDNAME in $(ls -v $FILTER|grep -v "\."[bB][aA][kK]$|grep -v ~$); do
 			"$OLDNAME" $((16>${#OLDNAME}?16-${#OLDNAME}:1)) ' ' "${NEWNAME}${EXT}"
 		if [ -f "${NEWNAME}${EXT}" ]; then
 			echo ' WARNING: File exists!'
-			OVERWRITE=0 	# Just in case the user doesn't what he/she is doing.
+			OVERWRITE=0 	# Just in case the user doesn't know what he/she is doing.
 		else
 			echo
 		fi
