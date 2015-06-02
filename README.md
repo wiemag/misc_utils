@@ -12,6 +12,7 @@ Small utility bash scripts.
 - pdf2pdf_mono.sh     - convert a PDF file into a monochrome PDF file
 - pdf-rem-meta.sh     - remove meta data from a pdf file
 - pdf-rm-meta.sh      - the same as above, different tool used
+- pdf-rot.sh          - a simplified and limited pdftk wrapper; rotates pages
 - rename_acc2list.sh  - rename files acc. to a list of file names in a text file
 - album2songs_m4a2mp3.sh - splits album.m4a into mp3's acc. to time stamps
 - signit.sh           - gpg wrapper to make detached gpg signatures
