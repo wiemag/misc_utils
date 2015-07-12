@@ -7,6 +7,8 @@ Small utility bash scripts.
 - myip.sh             - external and internal IP plus card interface name
 - sendmyip.sh         - send results of myip.sh to a recepient
 - charset4html.sh     - set of characters used in html files (gist)
+- album2songs_m4a2mp3.sh - splits album.m4a into mp3's acc. to time stamps
+- m3u2iso.sh          - Make ISO image and keep the m3u list file order
 - jpg2pdf.sh          - converting JPEG's into monochrome PDF's
 - pdf_cutting.sh      - splitting PDF's into smaller PDF's
 - pdf2pdf_mono.sh     - convert a PDF file into a monochrome PDF file
@@ -14,7 +16,6 @@ Small utility bash scripts.
 - pdf-rm-meta.sh      - the same as above, different tool used
 - pdf-rot.sh          - a simplified and limited pdftk wrapper; rotates pages
 - rename_acc2list.sh  - rename files acc. to a list of file names in a text file
-- album2songs_m4a2mp3.sh - splits album.m4a into mp3's acc. to time stamps
 - signit.sh           - gpg wrapper to make detached gpg signatures
 
 INSTALLATION
