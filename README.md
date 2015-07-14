@@ -17,6 +17,7 @@ Small utility bash scripts.
 - pdf-rot.sh          - a simplified and limited pdftk wrapper; rotates pages
 - rename_acc2list.sh  - rename files acc. to a list of file names in a text file
 - signit.sh           - gpg wrapper to make detached gpg signatures
+- nmap-whoshere.sh    - list hosts on current local network
 
 INSTALLATION
 
