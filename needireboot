@@ -1,0 +1,13 @@
+#!/bin/bash
+# Version numbering: major.minor.maintenance-arch_release
+# pacman drops maintenance number if maintenance=0, e.g. 3.16.0-2 --> 3.16-2
+u=$(uname -r); u=${u%-ARCH}; [[ $u = *.0-* ]] && u=${u/.0-/-} 
+p=$(pacman -Q linux|cut -d" " -f2)
+if [[ $u == $p ]]; then
+        echo The installed kernel \([1m$u[0m\) and the currently running one are the same.
+        exit 1
+else
+        echo "Kernel installed: $p"
+        echo "Kernel running:   $u"
+        echo Yes, you need reboot.
+fi

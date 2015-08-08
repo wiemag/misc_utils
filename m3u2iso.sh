@@ -9,18 +9,36 @@
 #cat ${1%.m3u}.lst
 
 #---Intro
-VER='0.99'
-function invoke_msg { echo -e "\nRun:\n\t${0##*/} list.m3u | -h\n";}
+VERSION='1.00'
+function invoke_msg { echo -e "\nRun:\n\t${0##*/} [-i charset] [-o charset] list.m3u | -h\n";}
+function options_msg { echo "-i charset, input file names { utf8, ISO-5998-1, ISO-5998-1,... }";
+	echo "-o charset, output file names";
+	echo -e "Run 'genisoimage -input-charset help' to see all charsets available.\n";
+}
 function usage_msg {
-	echo ${0##*/} Version ${VER}; invoke_msg
+	echo ${0##*/} Version ${VERSION}; invoke_msg; options_msg;
 	echo -e "The script creates an iso image with files as specified\n  in the list.m3u file."
 	echo As a lot of CD/DVD players sort files by file name automatically,
 	echo "  consecutive numbers are prepended to the file names to ensure"
-	echo "  unchanged original file order."
+	echo "  unchanged original file order as defined by playlist 'list.m3u'."
 }
-[[ $# -eq 0 ]] && { invoke_msg; exit;}
-[ "$1" == '-h' -o "$1" == '--help' ] && { usage_msg; exit;}
-[[ ! -f $1 ]] && { echo; echo $1 does not exist.; invoke_msg; exit;}
+
+while getopts ":i:o:hv" flag
+do
+    case "$flag" in
+		i) INCHAR="$OPTARG";;
+		o) OUTCHAR="$OPTARG";;
+		h) usage_msg; exit;;
+		v) echo -e "${0##*/} version ${VERSION}" && exit;;
+	esac
+done
+# Remove the options parsed above.
+shift `expr $OPTIND - 1`
+(( $# )) || { invoke_msg; echo -e "\n\e[1;31mMissing file name.\e[0m" ; exit;}
+
+[[ $# -eq 0 ]] && { invoke_msg; options_msg; exit;}
+[ "$1" == '--help' ] && { usage_msg; exit;}
+[[ ! -f "$1" ]] && { echo; echo $1 does not exist.; invoke_msg; exit;}
 
 #---Down to business
 TMPD=tmp.m3u_list        # Temporary folder for hard links
@@ -46,6 +64,8 @@ done < $1
 DATE=$(date +%Y%m%d)
 ISO="${1%.m3u}_${DATE}.iso"
 genisoimage -f -rJ -V $DATE -o "$ISO" "$TMPD"
+genisoimage -f -rJ -V $DATE -o "$ISO"_1 -path-list listalista.txt
+
 (( $? )) || {
 	echo; echo File "$ISO" has been created.
 	#LC_NUMERIC=en_US printf "The file size is %'d bytes.\n" $(stat -c%s "$ISO")

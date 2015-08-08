@@ -3,6 +3,7 @@
 
 # List of available tables (Lines end in <CR><LF>).
 # <LF> is a separator here; <CR> needs to be removed later in the script.
+VERSION=1.00
 URL="http://www.nbp.pl/kursy/xml/dir.txt"
 
 [[ $# == 0 ]] && DATE="z$(date +%y%m%d)" || DATE=""
