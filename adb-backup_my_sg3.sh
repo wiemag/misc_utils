@@ -8,7 +8,15 @@ if [[ "$FILE" = '-h' ]] || [[ "$FILE" = '--help' ]]; then
 	echo \'bkp-$(date +%Y%m%d-%H%M).ab\' today.
 	exit
 fi
-adb backup -apk -obb -all -shared -f $FILE
+if [[ "$FILE" =~ ^-.* ]]; then
+	OP="$FILE"
+	shift
+	FILE="${1-bkp-$(date +%Y%m%d-%H%M).ab}"
+fi
+case "$OP" in
+	-a) adb backup -all -shared -f $FILE;;
+	-f|*) adb backup -apk -obb -all -shared -f $FILE
+esac
 
 #--TUTORIAL---------
 #adb backup -all
