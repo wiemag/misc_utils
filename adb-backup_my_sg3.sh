@@ -15,7 +15,8 @@ if [[ "$FILE" =~ ^-.* ]]; then
 fi
 case "$OP" in
 	-a) adb backup -all -shared -f $FILE;;
-	-f|*) adb backup -apk -obb -all -shared -f $FILE
+	-b) adb backup -f $FILE;;
+	-f|*) adb backup -apk -obb -all -shared -f $FILE;;
 esac
 
 #--TUTORIAL---------

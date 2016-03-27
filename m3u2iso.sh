@@ -9,7 +9,7 @@
 #cat ${1%.m3u}.lst
 
 #---Intro
-VERSION='1.00'
+VERSION='1.01'
 function invoke_msg { echo -e "\nRun:\n\t${0##*/} [-i charset] [-o charset] list.m3u | -h\n";}
 function options_msg { echo "-i charset, input file names { utf8, ISO-5998-1, ISO-5998-1,... }";
 	echo "-o charset, output file names";
@@ -45,7 +45,7 @@ TMPD=tmp.m3u_list        # Temporary folder for hard links
 N=$(grep -vce '^#.*' $1) # Number of files specified in .m3u
 R=1; while ((N/10)); do N=$((N/10)); ((R++)); done
 if [[ $(ls -A $TMPD 2>/dev/null) ]]; then
-	echo -e "\nWarning! File '$TMPD' exists and is not empty."
+	echo -e "\nWarning! Directory '$TMPD' exists and is not empty."
 	echo You need to empty or remove it.
 	exit
 fi
@@ -64,7 +64,6 @@ done < $1
 DATE=$(date +%Y%m%d)
 ISO="${1%.m3u}_${DATE}.iso"
 genisoimage -f -rJ -V $DATE -o "$ISO" "$TMPD"
-genisoimage -f -rJ -V $DATE -o "$ISO"_1 -path-list listalista.txt
 
 (( $? )) || {
 	echo; echo File "$ISO" has been created.

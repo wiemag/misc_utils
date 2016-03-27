@@ -100,5 +100,7 @@ for OLDNAME in $(ls -v $FILTER|grep -v "\."[bB][aA][kK]$|grep -v ~$); do
 	fi
 done
 echo "$i files $( (($RUN)) || echo "to be ")renamed."
-[[ -n $(cat ${LIST}|sed -n $((++i))p) ]] && \
-	echo "The list of new names is LONGER that the number of filtered files."
+[[ -n $(cat ${LIST}|sed -n $((++i))p) ]] && {
+	echo "The list of new names is LONGER that the number of filtered files.";
+	echo -e "\e[1mMake sure that the filter pattern is surrounded by apostrophies.\e[0m";
+}
