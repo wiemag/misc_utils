@@ -1,6 +1,6 @@
 #!/bin/bash
 # Check my external ip
-VERSION='v0.3'
+VERSION='v0.4'
 # In Arch Linux the curl package is in the base repository, while the wget in the extra.
 #
 function usage() {
@@ -14,54 +14,47 @@ function usage() {
 	echo If no options, external IP, local IP, and interface name are printed.
 }
 
+function ext-IP() {
+	WEBSERVICE="l2.io/ip"
+	IP=$(hash dig >/dev/null 2>&1 && dig +short myip.opendns.com @resolver1.opendns.com) || {
+		IP=$(hash curl >/dev/null 2>&1 && curl "$WEBSERVICE" 2>/dev/null) || {
+			IP=$(hash wget >/dev/null 2>&1 && wget -q -O - "$WEBSERVICE") || {
+				echo; echo Missing dependencies.
+				echo Install \"bind-tools\", \"curl\" or \"wget\".
+				exit 1
+			}
+		}
+	}
+	echo $IP
+}
+
+function loc-IP() {
+	echo $(ip a show $IFACE | awk '$1 == "inet" { split($2, a, "/"); print a[1]; }')
+}
+
 IFACE=$(echo $(ip route)|cut -d" " -f5)
 
-while getopts  ":lgiV" flag
+while getopts  ":lgwiV" flag
 do
     case "$flag" in
         i) echo $IFACE; exit;;	# interface
-        l) ip a show $IFACE | awk '$1 == "inet" { split($2, a, "/"); print a[1]; }'; exit;;   	# local IP
-        g) : ;;  	# global IP
+        l) loc-IP; exit;;   	# local IP
+        g|w) ext-IP; exit;;  	# global IP
         V|v) echo "Version ${VERSION}"; exit;;
         *) usage; exit;;
     esac
 done
 
-# --- External/Internet IP ---------------
-if [ -f `whereis curl | cut -d" " -f2` ] ; then
-	IP=$(curl -s checkip.dyndns.org)
-else
-	if [ -f `whereis wget | cut -d" " -f2` ] ; then
-		IP=$(wget -q -O - checkip.dyndns.org)
-		IP=${IP#*: }; IP=${IP%%<*}
-	else
-		echo
-		echo Missing dependencies.
-		echo Install \"wget\" or \"curl\".
-		if [ -f `whereis iproute2 | cut -d" " -f2` ]; then
-			echo Package \"iproute2\" is missing, too.
-		fi
-		echo
-		exit 1
-	fi
-fi
-IP=${IP#*: }
-echo ${IP%%<*}
-
-# --- Local IP ---------------------------
-if [[ -z $1 ]]; then
-	ip a show $IFACE | awk '$1 == "inet" { split($2, a, "/"); print a[1]; }'
-	echo $IFACE
-fi
+ext-IP
+loc-IP
+echo $IFACE
 
 # --- External/Internet IP methods -------
-# Method 1
+# Methods
 #wget -q -O - checkip.dyndns.org|sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
-# Method 2
 #curl -s checkip.dyndns.org|sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
-# Method 3
 #curl -s http://www.showmyip.ws | grep -A1 "Your Ip" | cut -d">" -f3|cut -d"<" -f1|grep .
-# Method 4
 #curl http://sputnick-area.net/ip
-# Method 5
-#curl -s ifconfig.me/all|grep ip_addr|sed  's/ip_addr: //'
+#curl ifconfig.me/ip
+#curl eth0.me
+#curl l2.io/ip
