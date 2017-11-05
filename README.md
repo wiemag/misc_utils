@@ -2,7 +2,7 @@ Miscellaneous scripts
 ---------------------
 
 Small utility bash scripts.
-- 7pass.sh            - compress into password-protected 7z (hidden list)
+- 7z_enc.sh           - compress into password-protected 7z (hidden list)
 - group_members.sh    - list members of a chosen group
 - arch-install-usb.sh - install arch linux install ISO on a usb partition
 - myip.sh             - external and internal IP plus card interface name
