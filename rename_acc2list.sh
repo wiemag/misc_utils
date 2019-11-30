@@ -4,13 +4,11 @@
 #         USAGE: ./ren_acc2list.sh -f FILTER -l LIST -r -b -o
 #   DESCRIPTION: Rename a sorted list of files according to a list of file names
 #                in a text file.
-#                #
 #       OPTIONS: -f filter_pattern -l file_list -r -b -O
 #  REQUIREMENTS: sed, grep
 #          BUGS: ---
 #         NOTES: Written and intended for renaming of a series of pdf files
 #                containing technical drawings. Use can be more general.
-#
 #        AUTHOR: Wiesław Magusiak
 #       CREATED: 2014-05-30, 14:50
 #===============================================================================
@@ -18,12 +16,14 @@
 set -o nounset                              # Treat unset variables as an error
 
 RUN=0 				# Run dry, withouth actual renaming.
+REVRS='' 			# Reverse the list of file names. Don't uness $REVS == '-r'.
 BACKUP=0 			# Don't back up original files as OLDNAME.bak.
 OVERWRITE=0 		# Don't overwrite target files with NEWNAME. Create NEWNAME.bak.
+LIST='list' 		# Default list name
 VERSION=v1.0
 
 MSG="Usage:
-\t${0##*/} [\e[1m-f\e[0m FILTER] [\e[1m-l\e[0m LIST] [\e[1m-r\e[0m] [\e[1m-O\e[0m] [\e[1m-b\e[0m]
+\t${0##*/} [-f FILTER] [-l LIST] [-R] [-r] [-O] [-b]
 \t${VERSION}, 2014-05-30
 Where:
 \tFILTER - a pattern to filter files to be renamed
@@ -32,17 +32,20 @@ Where:
 \t         Default: '\e[1mpdf_*\e[0m'
 \tLIST   - a text file with a list of new file names
 \t         Default: '\e[1mlist\e[0m'
-\t\e[1mr\e[0m      - if used, actual renaming is done
+\te      - \e[1me\e[0mextension if not in the LIST
+\tR      - \e[1mR\e[0meverts the list of file names
+\tr      - if used, actual renaming is done
 \tO      - \e[1mO\e[0mverite target files if NEWNAME files exist.
 \t         Default: Back up target file-names files if they exist.
 \tb      - \e[1mb\e[0mack up original files as OLDNAME.bak\n"
 
 [[ -z $@ ]] && { echo -e "$MSG"; exit;}
 
-while getopts  ":f:l:e:rObh" flag; do
+while getopts  ":f:l:Re:rObh" flag; do
 	case "$flag" in
 		f) FILTER="$OPTARG";; 	# A pattern to filter files to be renamed
 		l) LIST="$OPTARG";; 	# A text file with a list of names for files
+		R) REVRS="-r";; 		# Reverse the list if names
 		e) EXT="$OPTARG";; 		# New file name extension if not in the $LIST
 		r) RUN=1;; 				# Rename. If 0, the script will do a dry run.
 		O) OVERWRITE=1;; 		# Overwrite targets.
@@ -53,10 +56,8 @@ done
 
 ## Set variables ###########################
 FILTER=${FILTER-pdf_*}
-LIST=${LIST-list}
 if [ ! -f $LIST ]; then
-	echo -e "$MSG"
-	echo File \'$LIST\' does not exist.
+	echo -e "$MSG \nFile \'$LIST\' does not exist."
 	exit
 fi
 EXT=${EXT-}
@@ -75,9 +76,10 @@ fi
 ## Start the job ###########################
 echo Renaming list$( (($RUN)) || echo " (Dry run)"):
 i=0
-for OLDNAME in $(ls -v $FILTER|grep -v "\."[bB][aA][kK]$|grep -v ~$); do
+for OLDNAME in $(ls $REVRS -v $FILTER|grep -v "\."[bB][aA][kK]$|grep -v ~$); do
 	((++i))
-	NEWNAME=$(cat ${LIST}|sed -n ${i}p)
+	#NEWNAME=$( [[ $REVRS -eq 0 ]] && cat "${LIST}" |sed -n ${i}p || tac "${LIST}" |sed -n ${i}p)
+	NEWNAME=$( cat "${LIST}" |sed -n ${i}p )
 	if [[ -n $NEWNAME ]]; then
 		printf "  %s%*s==>  %s" \
 			"$OLDNAME" $((16>${#OLDNAME}?16-${#OLDNAME}:1)) ' ' "${NEWNAME}${EXT}"
